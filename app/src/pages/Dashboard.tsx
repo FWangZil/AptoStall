@@ -1,6 +1,9 @@
-import { KioskSummaryCard } from "@/components/KioskSummaryCard";
+import { KioskSummaryCard } from "@/components/StallSummaryCard";
 import { ListItemForm } from "@/components/ListItemForm";
 import { ListingTable } from "@/components/ListingTable";
+import { MyAssetsCard } from "@/components/MyAssetsCard";
+import { CreateTestNFTCard } from "@/components/CreateTestNFTCard";
+import { KioskDebugCard } from "@/components/StallDebugCard";
 
 export function Dashboard() {
   return (
@@ -9,9 +12,12 @@ export function Dashboard() {
         {/* Left Column */}
         <div className="space-y-6">
           <KioskSummaryCard />
+          <KioskDebugCard />
+          <CreateTestNFTCard />
+          <MyAssetsCard />
           <ListItemForm />
         </div>
-        
+
         {/* Right Column */}
         <div>
           <ListingTable />

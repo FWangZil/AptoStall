@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # AptoStall Deployment Script
-# This script compiles and deploys the marketplace contract to devnet
+# This script compiles and deploys the marketplace contract to testnet
 
 set -e
 
@@ -36,16 +36,16 @@ fi
 
 echo "✅ All tests passed!"
 
-# Check if devnet profile exists
-if ! aptos config show-profiles | grep -q "devnet"; then
+# Check if testnet profile exists
+if ! aptos config show-profiles | grep -q "testnet"; then
     echo "⚠️  Devnet profile not found. Creating one..."
-    echo "Please follow the prompts to set up your devnet profile:"
-    aptos init --profile devnet --network devnet
+    echo "Please follow the prompts to set up your testnet profile:"
+    aptos init --profile testnet --network testnet
 fi
 
-# Deploy to devnet
-echo "🌐 Deploying to devnet..."
-aptos move publish --profile devnet
+# Deploy to testnet
+echo "🌐 Deploying to testnet..."
+aptos move publish --profile testnet
 
 if [ $? -eq 0 ]; then
     echo "🎉 Deployment successful!"

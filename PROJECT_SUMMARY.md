@@ -3,7 +3,7 @@
 ## 🎯 项目概述
 
 成功创建了一个完整的 **Kiosk 风格固定价格市场** 项目，包含：
-- **智能合约**：生产级 Move 合约，部署在 Aptos devnet
+- **智能合约**：生产级 Move 合约，部署在 Aptos testnet
 - **前端应用**：现代化 React + TypeScript DApp
 
 ## 📁 项目结构
@@ -55,7 +55,7 @@ struct Listing has copy, drop, store {
 ```
 
 ### 主要函数
-1. `create_kiosk(account: &signer, seed: vector<u8>)`
+1. `create_stall(account: &signer, seed: vector<u8>)`
 2. `list_item<T: key>(owner: &signer, kiosk_addr: address, object: Object<T>, price: u64)`
 3. `buy<T: key>(buyer: &signer, kiosk_addr: address, object_addr: address, payment_amount: u64)`
 
@@ -99,8 +99,8 @@ aptos move compile --dev
 # 运行测试
 aptos move test --dev --skip-fetch-latest-git-deps
 
-# 部署到 devnet
-aptos move publish --profile devnet
+# 部署到 testnet
+aptos move publish --profile testnet
 ```
 
 ### 前端应用启动
@@ -116,8 +116,8 @@ npm run dev
 
 ### 环境配置
 ```env
-VITE_APTOS_NODE_URL=https://fullnode.devnet.aptoslabs.com/v1
-VITE_APTOS_NETWORK=devnet
+VITE_APTOS_NODE_URL=https://fullnode.testnet.aptoslabs.com/v1
+VITE_APTOS_NETWORK=testnet
 VITE_MODULE_ADDRESS=0x42  # 替换为实际部署地址
 ```
 

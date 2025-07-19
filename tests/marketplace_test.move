@@ -54,12 +54,12 @@ module marketplace::marketplace_test {
     }
 
     #[test]
-    fun test_create_kiosk() {
+    fun test_create_stall() {
         let (seller, _buyer) = setup_test();
         let seed = b"test_kiosk";
 
         // Create kiosk
-        marketplace::create_kiosk(&seller, seed);
+        marketplace::create_stall(&seller, seed);
 
         // Verify kiosk was created by checking if we can get owner
         let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
@@ -74,7 +74,7 @@ module marketplace::marketplace_test {
         let seed = b"test_kiosk";
 
         // Create kiosk
-        marketplace::create_kiosk(&seller, seed);
+        marketplace::create_stall(&seller, seed);
         let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
 
         // Create test object
@@ -117,7 +117,7 @@ module marketplace::marketplace_test {
         let (seller, _buyer) = setup_test();
         let seed = b"test_kiosk";
 
-        marketplace::create_kiosk(&seller, seed);
+        marketplace::create_stall(&seller, seed);
         let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
@@ -132,7 +132,7 @@ module marketplace::marketplace_test {
         let (seller, buyer) = setup_test();
         let seed = b"test_kiosk";
 
-        marketplace::create_kiosk(&seller, seed);
+        marketplace::create_stall(&seller, seed);
         let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&buyer, 42);
@@ -147,7 +147,7 @@ module marketplace::marketplace_test {
         let (seller, buyer) = setup_test();
         let seed = b"test_kiosk";
 
-        marketplace::create_kiosk(&seller, seed);
+        marketplace::create_stall(&seller, seed);
         let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
@@ -163,7 +163,7 @@ module marketplace::marketplace_test {
         let (seller, buyer) = setup_test();
         let seed = b"test_kiosk";
 
-        marketplace::create_kiosk(&seller, seed);
+        marketplace::create_stall(&seller, seed);
         let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);

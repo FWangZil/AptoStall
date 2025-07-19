@@ -3,7 +3,7 @@
 ## 🎯 Project Overview
 
 Successfully created a complete **Kiosk-style fixed-price marketplace** project, including:
-- **Smart Contract**: Production-grade Move contract deployed on Aptos devnet.
+- **Smart Contract**: Production-grade Move contract deployed on Aptos testnet.
 - **Frontend Application**: Modern React + TypeScript DApp.
 
 ## 📁 Project Structure
@@ -55,7 +55,7 @@ struct Listing has copy, drop, store {
 ```
 
 ### Main Functions
-1. `create_kiosk(account: &signer, seed: vector<u8>)`
+1. `create_stall(account: &signer, seed: vector<u8>)`
 2. `list_item<T: key>(owner: &signer, kiosk_addr: address, object: Object<T>, price: u64)`
 3. `buy<T: key>(buyer: &signer, kiosk_addr: address, object_addr: address, payment_amount: u64)`
 
@@ -99,8 +99,8 @@ aptos move compile --dev
 # Run tests
 aptos move test --dev --skip-fetch-latest-git-deps
 
-# Deploy to devnet
-aptos move publish --profile devnet
+# Deploy to testnet
+aptos move publish --profile testnet
 ```
 
 ### Frontend Application Startup
@@ -116,8 +116,8 @@ npm run dev
 
 ### Environment Configuration
 ```env
-VITE_APTOS_NODE_URL=https://fullnode.devnet.aptoslabs.com/v1
-VITE_APTOS_NETWORK=devnet
+VITE_APTOS_NODE_URL=https://fullnode.testnet.aptoslabs.com/v1
+VITE_APTOS_NETWORK=testnet
 VITE_MODULE_ADDRESS=0x42  # Replace with the actual deployment address
 ```
 

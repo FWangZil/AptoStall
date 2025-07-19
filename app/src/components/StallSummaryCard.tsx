@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useKiosk } from "@/hooks/useKiosk";
+import { useKiosk } from "@/hooks/useStall";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { Store, Plus } from "lucide-react";
 
 export function KioskSummaryCard() {
   const { connected } = useWallet();
-  const { kioskAddress, kiosk, createKiosk, isCreatingKiosk } = useKiosk();
+  const { stallAddress, kiosk, createKiosk, isCreatingKiosk, clearKioskData } = useKiosk();
   const [seed, setSeed] = useState("");
 
   const handleCreateKiosk = () => {
@@ -36,7 +36,7 @@ export function KioskSummaryCard() {
     );
   }
 
-  if (!kioskAddress || !kiosk) {
+  if (!stallAddress || !kiosk) {
     return (
       <Card>
         <CardHeader>
@@ -66,6 +66,14 @@ export function KioskSummaryCard() {
             <Plus className="mr-2 h-4 w-4" />
             {isCreatingKiosk ? "Creating..." : "Create Stall"}
           </Button>
+          <Button
+            onClick={clearKioskData}
+            variant="outline"
+            size="sm"
+            className="w-full mt-2"
+          >
+            Clear Stall Data (Debug)
+          </Button>
         </CardContent>
       </Card>
     );
@@ -86,13 +94,13 @@ export function KioskSummaryCard() {
         <div>
           <Label className="text-sm font-medium">Stall Address</Label>
           <p className="text-sm text-muted-foreground font-mono">
-            {truncateAddress(kioskAddress, 10, 10)}
+            {truncateAddress(stallAddress, 10, 10)}
           </p>
         </div>
         <div>
           <Label className="text-sm font-medium">Owner</Label>
           <p className="text-sm text-muted-foreground font-mono">
-            {truncateAddress(kiosk.owner as string)}
+            {truncateAddress(String(kiosk?.owner || ''))}
           </p>
         </div>
         <div className="pt-2 border-t">

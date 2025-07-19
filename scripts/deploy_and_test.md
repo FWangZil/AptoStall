@@ -3,11 +3,11 @@
 ## Prerequisites
 
 1. Install Aptos CLI: https://aptos.dev/tools/aptos-cli/install-cli/
-2. Create or configure your Aptos profile for devnet
+2. Create or configure your Aptos profile for testnet
 
 ```bash
 # Initialize a new profile (if needed)
-aptos init --profile devnet --network devnet
+aptos init --profile testnet --network testnet
 
 # Or configure existing profile
 aptos config set-global-config --config-type workspace
@@ -34,7 +34,7 @@ aptos move test --filter test_list_and_buy_item
 
 ### 1. Publish the contract
 ```bash
-aptos move publish --profile devnet
+aptos move publish --profile testnet
 ```
 
 ### 2. Note the deployed address
@@ -46,9 +46,9 @@ After successful deployment, note the contract address from the output.
 ```bash
 # Replace <CONTRACT_ADDR> with your deployed contract address
 aptos move run \
-  --function-id <CONTRACT_ADDR>::marketplace::create_kiosk \
+  --function-id <CONTRACT_ADDR>::marketplace::create_stall \
   --args string:"my_kiosk_seed" \
-  --profile devnet
+  --profile testnet
 ```
 
 ### 2. Get Kiosk Address
@@ -68,7 +68,7 @@ aptos move run \
   --function-id <CONTRACT_ADDR>::marketplace::list_item \
   --type-args <OBJECT_TYPE> \
   --args address:<KIOSK_ADDR> address:<OBJECT_ADDR> u64:100000000 \
-  --profile devnet
+  --profile testnet
 ```
 
 ### 4. Buy an Item
@@ -78,7 +78,7 @@ aptos move run \
   --function-id <CONTRACT_ADDR>::marketplace::buy \
   --type-args <OBJECT_TYPE> \
   --args address:<KIOSK_ADDR> address:<OBJECT_ADDR> \
-  --profile devnet
+  --profile testnet
 ```
 
 ## View Functions
@@ -125,10 +125,10 @@ aptos move view \
 
 ```bash
 # Check account balance
-aptos account balance --profile devnet
+aptos account balance --profile testnet
 
 # Fund account from faucet
-aptos account fund-with-faucet --profile devnet
+aptos account fund-with-faucet --profile testnet
 
 # Check transaction status
 aptos transaction show --transaction-hash <TX_HASH>

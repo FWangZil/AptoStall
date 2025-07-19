@@ -1,5 +1,5 @@
-/// Kiosk-style fixed-price marketplace for Aptos
-/// Allows sellers to create isolated resource accounts to hold Kiosk resources
+/// Stall-style fixed-price marketplace for Aptos
+/// Allows sellers to create isolated resource accounts to hold Stall resources
 /// and list transferable objects at fixed prices for buyers to purchase.
 module marketplace::marketplace {
     use std::signer;
@@ -16,7 +16,8 @@ module marketplace::marketplace {
     const E_NOT_LISTED: u64 = 2;
     const E_PRICE_MISMATCH: u64 = 3;
     const E_ZERO_PRICE: u64 = 4;
-    const E_KIOSK_NOT_FOUND: u64 = 5;
+    const E_STALL_NOT_FOUND: u64 = 5;
+    const E_OBJECT_NOT_TRANSFERABLE: u64 = 6;
 
     // Policy types for future extensibility
     const POLICY_FIXED_PRICE: u8 = 0;
@@ -27,124 +28,127 @@ module marketplace::marketplace {
         policy: u8         // policy type (currently only fixed price)
     }
 
-    /// Main kiosk resource that holds listed items
-    struct Kiosk has key {
+    /// Main stall resource that holds listed items
+    struct Stall has key {
         items: Table<address, Listing>,  // object address -> listing
         owner: address,                  // seller's EOA wallet
-        signer_cap: SignerCapability     // capability to sign for this kiosk
+        signer_cap: SignerCapability     // capability to sign for this stall
     }
 
     // Events
     #[event]
-    struct KioskCreated has drop, store {
-        kiosk_addr: address,
+    struct StallCreated has drop, store {
+        stall_addr: address,
         owner: address
     }
 
     #[event]
     struct ItemListed has drop, store {
-        kiosk_addr: address,
+        stall_addr: address,
         object_addr: address,
         price: u64
     }
 
     #[event]
     struct ItemSold has drop, store {
-        kiosk_addr: address,
+        stall_addr: address,
         object_addr: address,
         price: u64,
         seller: address,
         buyer: address
     }
 
-    /// Creates a new kiosk using a resource account
-    public entry fun create_kiosk(account: &signer, seed: vector<u8>) {
+    /// Creates a new stall using a resource account
+    public entry fun create_stall(account: &signer, seed: vector<u8>) {
         let owner_addr = signer::address_of(account);
 
         // Create resource account
-        let (kiosk_signer, signer_cap) = account::create_resource_account(account, seed);
-        let kiosk_addr = signer::address_of(&kiosk_signer);
+        let (stall_signer, signer_cap) = account::create_resource_account(account, seed);
+        let stall_addr = signer::address_of(&stall_signer);
 
-        // Initialize empty kiosk
-        let kiosk = Kiosk {
+        // Initialize empty stall
+        let stall = Stall {
             items: table::new(),
             owner: owner_addr,
             signer_cap
         };
 
-        // Move kiosk to resource account
-        move_to(&kiosk_signer, kiosk);
+        // Move stall to resource account
+        move_to(&stall_signer, stall);
 
         // Emit event
-        event::emit(KioskCreated {
-            kiosk_addr,
+        event::emit(StallCreated {
+            stall_addr,
             owner: owner_addr
         });
     }
 
-    /// Lists an object in the kiosk at a fixed price
+    /// Lists an object in the stall at a fixed price
     public entry fun list_item<T: key>(
         owner: &signer,
-        kiosk_addr: address,
+        stall_addr: address,
         object: Object<T>,
         price: u64
-    ) acquires Kiosk {
+    ) acquires Stall {
         assert!(price > 0, E_ZERO_PRICE);
-        assert!(exists<Kiosk>(kiosk_addr), E_KIOSK_NOT_FOUND);
+        assert!(exists<Stall>(stall_addr), E_STALL_NOT_FOUND);
 
-        let kiosk = borrow_global_mut<Kiosk>(kiosk_addr);
-        assert!(kiosk.owner == signer::address_of(owner), E_NOT_OWNER);
+        let stall = borrow_global_mut<Stall>(stall_addr);
+        assert!(stall.owner == signer::address_of(owner), E_NOT_OWNER);
 
         let object_addr = object::object_address(&object);
 
-        // Transfer object to kiosk
-        let kiosk_signer = account::create_signer_with_capability(&kiosk.signer_cap);
-        object::transfer(owner, object, signer::address_of(&kiosk_signer));
+        // Check if object supports ungated transfer
+        assert!(object::ungated_transfer_allowed(object), E_OBJECT_NOT_TRANSFERABLE);
+
+        // Transfer object to stall
+        let stall_signer = account::create_signer_with_capability(&stall.signer_cap);
+        object::transfer(owner, object, signer::address_of(&stall_signer));
 
         // Add listing
         let listing = Listing {
             price,
             policy: POLICY_FIXED_PRICE
         };
-        table::add(&mut kiosk.items, object_addr, listing);
+        table::add(&mut stall.items, object_addr, listing);
 
         // Emit event
         event::emit(ItemListed {
-            kiosk_addr,
+            stall_addr,
             object_addr,
             price
         });
     }
 
-    /// Buys an item from the kiosk
+    /// Buys an item from the stall
     public entry fun buy<T: key>(
         buyer: &signer,
-        kiosk_addr: address,
+        stall_addr: address,
         object_addr: address,
         payment_amount: u64
-    ) acquires Kiosk {
-        assert!(exists<Kiosk>(kiosk_addr), E_KIOSK_NOT_FOUND);
+    ) acquires Stall {
+        assert!(exists<Stall>(stall_addr), E_STALL_NOT_FOUND);
 
-        let kiosk = borrow_global_mut<Kiosk>(kiosk_addr);
-        assert!(table::contains(&kiosk.items, object_addr), E_NOT_LISTED);
+        let stall = borrow_global_mut<Stall>(stall_addr);
+        assert!(table::contains(&stall.items, object_addr), E_NOT_LISTED);
 
-        let listing = table::remove(&mut kiosk.items, object_addr);
+        let listing = table::remove(&mut stall.items, object_addr);
         assert!(payment_amount == listing.price, E_PRICE_MISMATCH);
 
-        // Transfer payment from buyer to kiosk owner
-        coin::transfer<AptosCoin>(buyer, kiosk.owner, payment_amount);
+        // Transfer payment from buyer to stall owner
+        coin::transfer<AptosCoin>(buyer, stall.owner, payment_amount);
 
         // Transfer object to buyer
-        let kiosk_signer = account::create_signer_with_capability(&kiosk.signer_cap);
+        let stall_signer = account::create_signer_with_capability(&stall.signer_cap);
         let object = object::address_to_object<T>(object_addr);
-        object::transfer(&kiosk_signer, object, signer::address_of(buyer));
+        object::transfer(&stall_signer, object, signer::address_of(buyer));
 
         // Emit event
         event::emit(ItemSold {
-            kiosk_addr,
+            stall_addr,
             object_addr,
             price: listing.price,
-            seller: kiosk.owner,
+            seller: stall.owner,
             buyer: signer::address_of(buyer)
         });
     }
@@ -152,36 +156,42 @@ module marketplace::marketplace {
     // View functions
 
     #[view]
-    /// Check if an item is listed in a kiosk
-    public fun is_listed(kiosk_addr: address, object_addr: address): bool acquires Kiosk {
-        if (!exists<Kiosk>(kiosk_addr)) {
+    /// Check if an item is listed in a stall
+    public fun is_listed(stall_addr: address, object_addr: address): bool acquires Stall {
+        if (!exists<Stall>(stall_addr)) {
             return false
         };
-        let kiosk = borrow_global<Kiosk>(kiosk_addr);
-        table::contains(&kiosk.items, object_addr)
+        let stall = borrow_global<Stall>(stall_addr);
+        table::contains(&stall.items, object_addr)
     }
 
     #[view]
     /// Get the price of a listed item
-    public fun get_price(kiosk_addr: address, object_addr: address): Option<u64> acquires Kiosk {
-        if (!exists<Kiosk>(kiosk_addr)) {
+    public fun get_price(stall_addr: address, object_addr: address): Option<u64> acquires Stall {
+        if (!exists<Stall>(stall_addr)) {
             return option::none()
         };
-        let kiosk = borrow_global<Kiosk>(kiosk_addr);
-        if (!table::contains(&kiosk.items, object_addr)) {
+        let stall = borrow_global<Stall>(stall_addr);
+        if (!table::contains(&stall.items, object_addr)) {
             return option::none()
         };
-        let listing = table::borrow(&kiosk.items, object_addr);
+        let listing = table::borrow(&stall.items, object_addr);
         option::some(listing.price)
     }
 
     #[view]
-    /// Get the owner of a kiosk
-    public fun get_kiosk_owner(kiosk_addr: address): Option<address> acquires Kiosk {
-        if (!exists<Kiosk>(kiosk_addr)) {
+    /// Get the owner of a stall
+    public fun get_stall_owner(stall_addr: address): Option<address> acquires Stall {
+        if (!exists<Stall>(stall_addr)) {
             return option::none()
         };
-        let kiosk = borrow_global<Kiosk>(kiosk_addr);
-        option::some(kiosk.owner)
+        let stall = borrow_global<Stall>(stall_addr);
+        option::some(stall.owner)
+    }
+
+    #[view]
+    /// Check if an object can be transferred (supports ungated transfer)
+    public fun is_object_transferable<T: key>(object: Object<T>): bool {
+        object::ungated_transfer_allowed(object)
     }
 }

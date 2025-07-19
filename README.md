@@ -33,7 +33,7 @@ struct Listing has copy, drop, store {
 
 ### Public Entry Functions
 
-1. **`create_kiosk(account: &signer, seed: vector<u8>)`**
+1. **`create_stall(account: &signer, seed: vector<u8>)`**
    - Creates a resource account using the provided seed
    - Publishes an empty Kiosk under that account
    - Emits `KioskCreated` event
@@ -59,9 +59,9 @@ struct Listing has copy, drop, store {
 ### Prerequisites
 
 1. Install [Aptos CLI](https://aptos.dev/tools/aptos-cli/install-cli/)
-2. Set up a devnet profile:
+2. Set up a testnet profile:
    ```bash
-   aptos init --profile devnet --network devnet
+   aptos init --profile testnet --network testnet
    ```
 
 ### Compilation and Testing
@@ -84,7 +84,7 @@ aptos move test --filter test_list_and_buy_item --dev --skip-fetch-latest-git-de
 ./scripts/deploy.sh
 
 # Or deploy manually
-aptos move publish --profile devnet
+aptos move publish --profile testnet
 ```
 
 ## 📋 Usage Examples
@@ -92,9 +92,9 @@ aptos move publish --profile devnet
 ### 1. Create a Kiosk
 ```bash
 aptos move run \
-  --function-id <CONTRACT_ADDR>::marketplace::create_kiosk \
+  --function-id <CONTRACT_ADDR>::marketplace::create_stall \
   --args string:"my_kiosk_seed" \
-  --profile devnet
+  --profile testnet
 ```
 
 ### 2. List an Item
@@ -103,7 +103,7 @@ aptos move run \
   --function-id <CONTRACT_ADDR>::marketplace::list_item \
   --type-args <OBJECT_TYPE> \
   --args address:<KIOSK_ADDR> address:<OBJECT_ADDR> u64:100000000 \
-  --profile devnet
+  --profile testnet
 ```
 
 ### 3. Buy an Item
@@ -112,7 +112,7 @@ aptos move run \
   --function-id <CONTRACT_ADDR>::marketplace::buy \
   --type-args <OBJECT_TYPE> \
   --args address:<KIOSK_ADDR> address:<OBJECT_ADDR> u64:100000000 \
-  --profile devnet
+  --profile testnet
 ```
 
 ## 🔒 Security Features
@@ -137,7 +137,7 @@ All tests pass successfully:
 ```
 [ PASS    ] test_buy_unlisted_item_fails
 [ PASS    ] test_buy_wrong_price_fails
-[ PASS    ] test_create_kiosk
+[ PASS    ] test_create_stall
 [ PASS    ] test_list_and_buy_item
 [ PASS    ] test_list_item_wrong_owner_fails
 [ PASS    ] test_list_item_zero_price_fails

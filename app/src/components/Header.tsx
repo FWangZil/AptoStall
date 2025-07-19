@@ -6,7 +6,7 @@ import { useAptos } from "@/hooks/useAptos";
 import { Wallet, LogOut } from "lucide-react";
 
 export function Header() {
-  const { account, connected, disconnect, connect, wallets } = useWallet();
+  const { account, connected, disconnect, connect, wallets, isLoading } = useWallet();
   const aptos = useAptos();
 
   const { data: balance } = useQuery({
@@ -62,10 +62,10 @@ export function Header() {
             <Button
               onClick={() => wallets && wallets.length > 0 && connect(wallets[0].name)}
               className="flex items-center space-x-2"
-              disabled={!wallets || wallets.length === 0}
+              disabled={!wallets || wallets.length === 0 || isLoading}
             >
               <Wallet className="h-4 w-4" />
-              <span>Connect Wallet</span>
+              <span>{isLoading ? "Connecting..." : "Connect Wallet"}</span>
             </Button>
           )}
         </div>

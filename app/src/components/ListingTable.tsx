@@ -1,42 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAptos } from "@/hooks/useAptos";
-import { useKiosk } from "@/hooks/useKiosk";
+import { useKiosk, Listing } from "@/hooks/useStall";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatApt, truncateAddress } from "@/lib/utils";
 import { ShoppingCart, Package } from "lucide-react";
+import { MODULE_ADDRESS } from "@/utils/constants";
 
-// Mock data for demonstration since we can't easily query table items without specific keys
-const mockListings = [
-  {
-    object_addr: "0x1234567890abcdef1234567890abcdef12345678",
-    price: 100000000, // 1 APT in octas
-  },
-  {
-    object_addr: "0xabcdef1234567890abcdef1234567890abcdef12",
-    price: 250000000, // 2.5 APT in octas
-  },
-];
+// We'll query actual blockchain data instead of using mock data
 
 export function ListingTable() {
   const { connected } = useWallet();
-  const { kioskAddress, buyItem, isBuyingItem } = useKiosk();
+  const { stallAddress, buyItem, isBuyingItem } = useKiosk();
   const aptos = useAptos();
 
-  // In a real implementation, you would query the table items
-  // For now, we'll use mock data
-  const { data: listings = [], isLoading } = useQuery({
-    queryKey: ["listings", kioskAddress],
+  // Query actual kiosk data from blockchain
+  const { data: listings = [], isLoading } = useQuery<Listing[]>({
+    queryKey: ["listings", stallAddress],
     queryFn: async () => {
-      if (!kioskAddress) return [];
+      if (!stallAddress) return [];
 
-      // This is where you would query the actual table items
-      // For demonstration, we return mock data
-      return mockListings;
+      try {
+        // Try to get the kiosk resource to see if it exists and has items
+        await aptos.getAccountResource({
+          accountAddress: stallAddress,
+          resourceType: `${MODULE_ADDRESS}::marketplace::Kiosk`,
+        });
+
+        // For now, return empty array since we can't easily iterate table items
+        // In a real implementation, you'd need to track object addresses separately
+        // or use indexer services to query table contents
+        return [];
+      } catch (error) {
+        console.log("No kiosk found or error querying:", error);
+        return [];
+      }
     },
-    enabled: !!kioskAddress,
+    enabled: !!stallAddress,
     refetchInterval: 10000,
   });
 
@@ -44,7 +46,7 @@ export function ListingTable() {
     buyItem({ objectAddr, price });
   };
 
-  if (!connected || !kioskAddress) {
+  if (!connected || !stallAddress) {
     return (
       <Card>
         <CardHeader>
@@ -95,7 +97,10 @@ export function ListingTable() {
             <Package className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium mb-2">No items listed</h3>
             <p className="text-muted-foreground mb-4">
-              List your first item to start selling in the marketplace
+              Your stall is empty. Use the "List Item" section to add items for sale.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Note: The previous mock data has been removed. Only real blockchain data is shown now.
             </p>
           </div>
         </CardContent>

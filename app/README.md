@@ -1,6 +1,6 @@
 # AptoStall DApp
 
-A minimal but production-grade front-end for the Kiosk-style fixed-price marketplace smart contract on Aptos devnet.
+A minimal but production-grade front-end for the Kiosk-style fixed-price marketplace smart contract on Aptos testnet.
 
 ## 🚀 Features
 
@@ -25,7 +25,7 @@ A minimal but production-grade front-end for the Kiosk-style fixed-price marketp
 
 - Node.js 18+ or Bun
 - Petra Wallet browser extension
-- APT tokens on devnet (from faucet)
+- APT tokens on testnet (from faucet)
 
 ## 🚀 Quick Start
 
@@ -46,8 +46,8 @@ npm install
 cp .env.example .env
 
 # Edit .env with your contract address
-VITE_APTOS_NODE_URL=https://fullnode.devnet.aptoslabs.com/v1
-VITE_APTOS_NETWORK=devnet
+VITE_APTOS_NODE_URL=https://fullnode.testnet.aptoslabs.com/v1
+VITE_APTOS_NETWORK=testnet
 VITE_MODULE_ADDRESS=0x42  # Replace with your deployed contract address
 ```
 
@@ -127,7 +127,7 @@ src/
 ### Environment Variables
 
 - `VITE_APTOS_NODE_URL`: Aptos fullnode URL
-- `VITE_APTOS_NETWORK`: Network name (devnet/testnet/mainnet)
+- `VITE_APTOS_NETWORK`: Network name (testnet/testnet/mainnet)
 - `VITE_MODULE_ADDRESS`: Your deployed contract address
 
 ### Contract Integration
@@ -181,7 +181,7 @@ bun run format
 
 1. **Wallet Connection Failed**
    - Ensure Petra wallet is installed
-   - Check if you're on the correct network (devnet)
+   - Check if you're on the correct network (testnet)
 
 2. **Transaction Failed**
    - Verify you have sufficient APT balance
