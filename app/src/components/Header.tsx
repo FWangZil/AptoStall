@@ -32,7 +32,7 @@ export function Header() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <span className="text-sm font-bold text-primary-foreground">K</span>
           </div>
-          <h1 className="text-xl font-bold">Kiosk Marketplace</h1>
+          <h1 className="text-xl font-bold">AptoStall</h1>
         </div>
 
         <div className="flex items-center space-x-4">

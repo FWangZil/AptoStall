@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Kiosk Marketplace Deployment Script
+# AptoStall Deployment Script
 # This script compiles and deploys the marketplace contract to devnet
 
 set -e
 
-echo "🚀 Starting Kiosk Marketplace deployment..."
+echo "🚀 Starting AptoStall deployment..."
 
 # Check if aptos CLI is installed
 if ! command -v aptos &> /dev/null; then

@@ -1,4 +1,4 @@
-# Kiosk Marketplace Smart Contract
+# AptoStall Smart Contract
 
 A production-grade, minimal smart contract package implementing a **Kiosk-style fixed-price marketplace** on the Aptos blockchain.
 

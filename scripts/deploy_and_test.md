@@ -1,4 +1,4 @@
-# Kiosk Marketplace Deployment and Testing Guide
+# AptoStall Deployment and Testing Guide
 
 ## Prerequisites
 

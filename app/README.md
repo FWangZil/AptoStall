@@ -1,4 +1,4 @@
-# Kiosk Marketplace DApp
+# AptoStall DApp
 
 A minimal but production-grade front-end for the Kiosk-style fixed-price marketplace smart contract on Aptos devnet.
 

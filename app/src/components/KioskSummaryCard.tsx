@@ -42,10 +42,10 @@ export function KioskSummaryCard() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Store className="h-5 w-5" />
-            <span>Create Your Kiosk</span>
+            <span>Create Your Stall</span>
           </CardTitle>
           <CardDescription>
-            Create a kiosk to start selling items in the marketplace
+            Create a stall to start selling items in the marketplace
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -58,8 +58,8 @@ export function KioskSummaryCard() {
               onChange={(e) => setSeed(e.target.value)}
             />
           </div>
-          <Button 
-            onClick={handleCreateKiosk} 
+          <Button
+            onClick={handleCreateKiosk}
             disabled={!seed.trim() || isCreatingKiosk}
             className="w-full"
           >
@@ -76,15 +76,15 @@ export function KioskSummaryCard() {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Store className="h-5 w-5" />
-          <span>Your Kiosk</span>
+          <span>Your Stall</span>
         </CardTitle>
         <CardDescription>
-          Manage your marketplace kiosk
+          Manage your stall
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label className="text-sm font-medium">Kiosk Address</Label>
+          <Label className="text-sm font-medium">Stall Address</Label>
           <p className="text-sm text-muted-foreground font-mono">
             {truncateAddress(kioskAddress, 10, 10)}
           </p>
@@ -96,7 +96,7 @@ export function KioskSummaryCard() {
           </p>
         </div>
         <div className="pt-2 border-t">
-          <p className="text-sm text-green-600">✓ Kiosk is active and ready</p>
+          <p className="text-sm text-green-600">✓ Stall is active and ready</p>
         </div>
       </CardContent>
     </Card>

@@ -1,4 +1,4 @@
-# Kiosk Marketplace - Complete Project Summary
+# AptoStall - Complete Project Summary
 
 ## 🎯 Project Overview
 

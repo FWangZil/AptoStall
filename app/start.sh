@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 Starting Kiosk Marketplace DApp..."
+echo "🚀 Starting AptoStall DApp..."
 
 # Check if bun is available
 if command -v bun &> /dev/null; then
