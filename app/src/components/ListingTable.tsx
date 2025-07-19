@@ -31,7 +31,7 @@ export function ListingTable() {
     queryKey: ["listings", kioskAddress],
     queryFn: async () => {
       if (!kioskAddress) return [];
-      
+
       // This is where you would query the actual table items
       // For demonstration, we return mock data
       return mockListings;
@@ -53,7 +53,7 @@ export function ListingTable() {
             <span>Marketplace</span>
           </CardTitle>
           <CardDescription>
-            Connect wallet and create a kiosk to view listings
+            Connect wallet and create a stall to view listings
           </CardDescription>
         </CardHeader>
       </Card>
@@ -87,7 +87,7 @@ export function ListingTable() {
             <span>Marketplace</span>
           </CardTitle>
           <CardDescription>
-            Items listed in your kiosk will appear here
+            Items listed in your stall will appear here
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -111,7 +111,7 @@ export function ListingTable() {
           <span>Marketplace</span>
         </CardTitle>
         <CardDescription>
-          Items available for purchase in your kiosk
+          Items available for purchase in your stall
         </CardDescription>
       </CardHeader>
       <CardContent>

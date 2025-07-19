@@ -34,7 +34,7 @@ export function ListItemForm() {
             <span>List Item</span>
           </CardTitle>
           <CardDescription>
-            Create a kiosk first to list items for sale
+            Create a stall first to list items for sale
           </CardDescription>
         </CardHeader>
       </Card>
@@ -49,7 +49,7 @@ export function ListItemForm() {
           <span>List New Item</span>
         </CardTitle>
         <CardDescription>
-          Add an item to your kiosk for sale
+          Add an item to your stall for sale
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -67,7 +67,7 @@ export function ListItemForm() {
               The address of the object you want to sell
             </p>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="price">Price (APT)</Label>
             <Input
@@ -85,8 +85,8 @@ export function ListItemForm() {
             </p>
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={!objectId.trim() || !price || parseFloat(price) <= 0 || isListingItem}
             className="w-full"
           >

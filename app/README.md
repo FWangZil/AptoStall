@@ -81,10 +81,10 @@ bun preview
 - Your address and APT balance will be displayed
 
 ### 2. Create Kiosk
-- Enter a unique seed for your kiosk
+- Enter a unique seed for your stall
 - Click "Create Kiosk"
 - Approve the transaction in your wallet
-- Your kiosk address will be saved locally
+- Your stall address will be saved locally
 
 ### 3. List Items
 - Enter the object ID you want to sell

@@ -109,7 +109,7 @@ aptos move view \
 1. **Deploy contract**
 2. **Create kiosk**
 3. **Create/mint an NFT or token to list**
-4. **List the item in your kiosk**
+4. **List the item in your stall**
 5. **Another account buys the item**
 
 ## Troubleshooting

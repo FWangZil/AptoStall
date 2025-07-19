@@ -26,10 +26,10 @@ export function KioskSummaryCard() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Store className="h-5 w-5" />
-            <span>Your Kiosk</span>
+            <span>Your Stall</span>
           </CardTitle>
           <CardDescription>
-            Connect your wallet to create or manage your kiosk
+            Connect your wallet to create or manage your stall
           </CardDescription>
         </CardHeader>
       </Card>
@@ -53,7 +53,7 @@ export function KioskSummaryCard() {
             <Label htmlFor="seed">Kiosk Seed</Label>
             <Input
               id="seed"
-              placeholder="Enter a unique seed for your kiosk"
+              placeholder="Enter a unique seed for your stall"
               value={seed}
               onChange={(e) => setSeed(e.target.value)}
             />
