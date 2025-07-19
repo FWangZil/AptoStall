@@ -13,13 +13,15 @@ export function Header() {
     queryKey: ["balance", account?.address],
     queryFn: async () => {
       if (!account?.address) return 0;
-      const resources = await aptos.getAccountResources({
-        accountAddress: account.address,
-      });
-      const coinResource = resources.find(
-        (r) => r.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
-      );
-      return coinResource ? (coinResource.data as any).coin.value : 0;
+      try {
+        const balance = await aptos.getAccountAPTAmount({
+          accountAddress: account.address,
+        });
+        return balance;
+      } catch (error) {
+        console.error("Failed to fetch balance:", error);
+        return 0;
+      }
     },
     enabled: !!account?.address,
     refetchInterval: 10000,
@@ -58,8 +60,9 @@ export function Header() {
             </div>
           ) : (
             <Button
-              onClick={() => connect(wallets[0].name)}
+              onClick={() => wallets && wallets.length > 0 && connect(wallets[0].name)}
               className="flex items-center space-x-2"
+              disabled={!wallets || wallets.length === 0}
             >
               <Wallet className="h-4 w-4" />
               <span>Connect Wallet</span>

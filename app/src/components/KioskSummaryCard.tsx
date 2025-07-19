@@ -50,7 +50,7 @@ export function KioskSummaryCard() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="seed">Kiosk Seed</Label>
+            <Label htmlFor="seed">Stall Seed</Label>
             <Input
               id="seed"
               placeholder="Enter a unique seed for your stall"
@@ -64,7 +64,7 @@ export function KioskSummaryCard() {
             className="w-full"
           >
             <Plus className="mr-2 h-4 w-4" />
-            {isCreatingKiosk ? "Creating..." : "Create Kiosk"}
+            {isCreatingKiosk ? "Creating..." : "Create Stall"}
           </Button>
         </CardContent>
       </Card>
