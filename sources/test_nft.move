@@ -1,17 +1,19 @@
 module marketplace::test_nft {
     use std::string::{Self, String};
     use std::signer;
+    use std::bcs;
     use aptos_framework::object::{Self};
     use aptos_framework::event;
+    use aptos_framework::timestamp;
 
     /// Test NFT resource that can be attached to objects
     struct TestNFT has key {
         name: String,
         description: String,
         creator: address,
+        uri: String,
     }
 
-    /// Event emitted when a test NFT is created
     #[event]
     struct TestNFTCreated has drop, store {
         object_addr: address,
@@ -19,17 +21,22 @@ module marketplace::test_nft {
         creator: address,
     }
 
-    /// Create a simple test NFT object
+    /// Create a simple test NFT object with proper metadata
     public entry fun create_test_nft(
         creator: &signer,
         name: String,
         description: String,
+        uri: String,
     ) {
         let creator_addr = signer::address_of(creator);
 
-        // Create a new object with a unique seed
-        let seed = name;
-        let constructor_ref = object::create_named_object(creator, *string::bytes(&seed));
+        // Create a new object with a unique seed based on name and timestamp
+        let timestamp = aptos_framework::timestamp::now_microseconds();
+        let seed_string = string::utf8(b"");
+        string::append(&mut seed_string, name);
+        string::append_utf8(&mut seed_string, b"_");
+        string::append_utf8(&mut seed_string, *string::bytes(&string::utf8(bcs::to_bytes(&timestamp))));
+        let constructor_ref = object::create_named_object(creator, *string::bytes(&seed_string));
         let object_signer = object::generate_signer(&constructor_ref);
         let object_addr = object::address_from_constructor_ref(&constructor_ref);
         
@@ -42,6 +49,7 @@ module marketplace::test_nft {
             name,
             description,
             creator: creator_addr,
+            uri,
         };
 
         // Move the TestNFT resource to the object

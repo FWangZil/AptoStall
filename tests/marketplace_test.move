@@ -1,14 +1,14 @@
 #[test_only]
 module marketplace::marketplace_test {
-    use std::signer;
 
-    use std::option;
     use aptos_framework::account;
-    use aptos_framework::coin;
     use aptos_framework::aptos_coin::{Self, AptosCoin};
+    use aptos_framework::coin;
     use aptos_framework::object::{Self, Object};
     use aptos_framework::timestamp;
     use marketplace::marketplace;
+    use std::option;
+    use std::signer;
 
     // Test helper to create a simple test object
     struct TestObject has key {
@@ -32,7 +32,7 @@ module marketplace::marketplace_test {
 
         // Mint coins for testing
         let seller_coins = coin::mint<AptosCoin>(1000000000, &mint_cap); // 10 APT
-        let buyer_coins = coin::mint<AptosCoin>(5000000000, &mint_cap);  // 50 APT
+        let buyer_coins = coin::mint<AptosCoin>(5000000000, &mint_cap); // 50 APT
 
         coin::deposit(signer::address_of(&seller), seller_coins);
         coin::deposit(signer::address_of(&buyer), buyer_coins);
@@ -62,8 +62,9 @@ module marketplace::marketplace_test {
         marketplace::create_stall(&seller, seed);
 
         // Verify kiosk was created by checking if we can get owner
-        let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
-        let owner = marketplace::get_kiosk_owner(kiosk_addr);
+        let kiosk_addr =
+            account::create_resource_address(&signer::address_of(&seller), seed);
+        let owner = marketplace::get_stall_owner(kiosk_addr);
         assert!(option::is_some(&owner), 1);
         assert!(option::extract(&mut owner) == signer::address_of(&seller), 2);
     }
@@ -75,7 +76,8 @@ module marketplace::marketplace_test {
 
         // Create kiosk
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
+        let kiosk_addr =
+            account::create_resource_address(&signer::address_of(&seller), seed);
 
         // Create test object
         let test_object = create_test_object(&seller, 42);
@@ -104,8 +106,14 @@ module marketplace::marketplace_test {
         let buyer_balance_after = coin::balance<AptosCoin>(signer::address_of(&buyer));
         let seller_balance_after = coin::balance<AptosCoin>(signer::address_of(&seller));
 
-        assert!(buyer_balance_after == buyer_balance_before - price, 7);
-        assert!(seller_balance_after == seller_balance_before + price, 8);
+        assert!(
+            buyer_balance_after == buyer_balance_before - price,
+            7
+        );
+        assert!(
+            seller_balance_after == seller_balance_before + price,
+            8
+        );
 
         // Verify object ownership transferred
         assert!(object::is_owner(test_object, signer::address_of(&buyer)), 9);
@@ -118,7 +126,8 @@ module marketplace::marketplace_test {
         let seed = b"test_kiosk";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
+        let kiosk_addr =
+            account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
 
@@ -133,7 +142,8 @@ module marketplace::marketplace_test {
         let seed = b"test_kiosk";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
+        let kiosk_addr =
+            account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&buyer, 42);
 
@@ -148,7 +158,8 @@ module marketplace::marketplace_test {
         let seed = b"test_kiosk";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
+        let kiosk_addr =
+            account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
         let object_addr = object::object_address(&test_object);
@@ -164,7 +175,8 @@ module marketplace::marketplace_test {
         let seed = b"test_kiosk";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr = account::create_resource_address(&signer::address_of(&seller), seed);
+        let kiosk_addr =
+            account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
         let object_addr = object::object_address(&test_object);

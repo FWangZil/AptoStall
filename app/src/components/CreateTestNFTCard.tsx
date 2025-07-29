@@ -14,9 +14,10 @@ export function CreateTestNFTCard() {
   const { account, connected, signAndSubmitTransaction } = useWallet();
   const aptos = useAptos();
   const { toast } = useToast();
-  const [isCreating, setIsCreating] = useState(false);
   const [nftName, setNftName] = useState("");
   const [nftDescription, setNftDescription] = useState("");
+  const [nftUri, setNftUri] = useState("https://via.placeholder.com/400x400.png?text=Test+NFT");
+  const [isCreating, setIsCreating] = useState(false);
 
   const createTestNFT = async () => {
     if (!account || !nftName.trim()) return;
@@ -25,14 +26,16 @@ export function CreateTestNFTCard() {
     try {
       const tokenName = nftName.trim();
       const tokenDescription = nftDescription.trim() || "A test NFT for marketplace testing";
+      const tokenUri = nftUri.trim();
 
-      // Use the project's test_nft module to create NFT
+      // Create the NFT
       const createNFTPayload = {
         function: `${MODULE_ADDRESS}::test_nft::create_test_nft` as `${string}::${string}::${string}`,
         typeArguments: [],
         functionArguments: [
           tokenName, // name
           tokenDescription, // description
+          tokenUri, // uri
         ],
       };
 
@@ -43,12 +46,13 @@ export function CreateTestNFTCard() {
 
       toast({
         title: "Test NFT Created Successfully!",
-        description: `"${tokenName}" has been created as a transferable object. Check your assets above.`,
+        description: `"${tokenName}" has been created as a digital object. Check your wallet!`,
       });
 
       // Clear form
       setNftName("");
       setNftDescription("");
+      setNftUri("https://via.placeholder.com/400x400.png?text=Test+NFT");
 
       // Refresh the page to update assets
       setTimeout(() => {
@@ -106,12 +110,22 @@ export function CreateTestNFTCard() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="nftDescription">Description (Optional)</Label>
+          <Label htmlFor="nftDescription">NFT Description (Optional)</Label>
           <Input
             id="nftDescription"
             placeholder="A test NFT for the marketplace"
             value={nftDescription}
             onChange={(e) => setNftDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="nftUri">Image URL (Optional)</Label>
+          <Input
+            id="nftUri"
+            placeholder="https://example.com/image.png"
+            value={nftUri}
+            onChange={(e) => setNftUri(e.target.value)}
           />
         </div>
 
