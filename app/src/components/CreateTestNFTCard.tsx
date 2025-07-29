@@ -36,6 +36,7 @@ export function CreateTestNFTCard() {
           tokenName, // name
           tokenDescription, // description
           tokenUri, // uri
+          account.address, // recipient
         ],
       };
 
@@ -99,6 +100,7 @@ export function CreateTestNFTCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+
         <div className="space-y-2">
           <Label htmlFor="nftName">NFT Name</Label>
           <Input
