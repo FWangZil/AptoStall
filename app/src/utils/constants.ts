@@ -1,6 +1,6 @@
-export const MODULE_ADDRESS = "0x421e6060f40c3f658aaa666f68c672768c707a2f26537e4b69e3308fe7504929";
-export const APTOS_NODE_URL = "https://fullnode.testnet.aptoslabs.com/v1";
-export const APTOS_NETWORK = "testnet";
+export const MODULE_ADDRESS = import.meta.env.VITE_MODULE_ADDRESS || "0x421e6060f40c3f658aaa666f68c672768c707a2f26537e4b69e3308fe7504929";
+export const APTOS_NODE_URL = import.meta.env.VITE_APTOS_NODE_URL || "https://fullnode.testnet.aptoslabs.com/v1";
+export const APTOS_NETWORK = import.meta.env.VITE_APTOS_NETWORK || "testnet";
 
 export const MARKETPLACE_MODULE = `${MODULE_ADDRESS}::marketplace`;
 

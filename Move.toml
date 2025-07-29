@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = ["dev"]
 
 [addresses]
-marketplace = "0x421e6060f40c3f658aaa666f68c672768c707a2f26537e4b69e3308fe7504929"
+marketplace = "_"
 
 [dev-addresses]
 marketplace = "0x42"
