@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatApt, truncateAddress } from "@/lib/utils";
 import { ShoppingCart, Package } from "lucide-react";
 import { MODULE_ADDRESS } from "@/utils/constants";
+import { Account, AccountAddress } from "@aptos-labs/ts-sdk";
 
 // We'll query actual blockchain data instead of using mock data
 
@@ -16,51 +17,73 @@ export function ListingTable() {
   const { stallAddress, buyItem, isBuyingItem } = useKiosk();
   const aptos = useAptos();
 
-  // Query actual kiosk data from blockchain
+  // Query actual marketplace data from blockchain using events
   const { data: listings = [], isLoading } = useQuery<Listing[]>({
-    queryKey: ["listings", stallAddress],
+    queryKey: ["marketplace-listings"],
     queryFn: async () => {
-      if (!stallAddress) return [];
-
       try {
-        // Try to get the kiosk resource to see if it exists and has items
-        await aptos.getAccountResource({
-          accountAddress: stallAddress,
-          resourceType: `${MODULE_ADDRESS}::marketplace::Kiosk`,
+        // Query all ItemListed events from the contract address
+        const events = await aptos.getAccountEventsByEventType({
+          accountAddress: AccountAddress.fromString("0x0000000000000000000000000000000000000000000000000000000000000000"),
+          eventType: `${MODULE_ADDRESS}::marketplace::ItemListed`,
+          minimumLedgerVersion: 0,
         });
 
-        // For now, return empty array since we can't easily iterate table items
-        // In a real implementation, you'd need to track object addresses separately
-        // or use indexer services to query table contents
-        return [];
+        // Process all events (not filtering by stall)
+        const allEvents = events || [];
+
+        console.log("All ItemListed events:", events);
+        console.log("Processing all events:", allEvents);
+
+        // Get current listings by checking which items are still listed
+        const currentListings: Listing[] = [];
+
+        // Safety check: ensure allEvents is an array
+        if (!Array.isArray(allEvents)) {
+          console.log("No events found or events is not an array");
+          return [];
+        }
+
+        for (const event of allEvents) {
+          const { stall_addr, object_addr, price } = event.data;
+
+          // Check if item is still listed (not sold)
+          try {
+            const isStillListed = await aptos.view({
+              payload: {
+                function: `${MODULE_ADDRESS}::marketplace::is_listed` as `${string}::${string}::${string}`,
+                functionArguments: [stall_addr, object_addr],
+              },
+            });
+
+            if (isStillListed[0]) {
+              currentListings.push({
+                object_addr,
+                price: parseInt(price),
+                stall_addr,
+              });
+            }
+          } catch (error) {
+            console.log(`Error checking if ${object_addr} is still listed:`, error);
+          }
+        }
+
+        console.log("Current listings:", currentListings);
+        return currentListings;
       } catch (error) {
-        console.log("No kiosk found or error querying:", error);
+        console.error("Error fetching listings:", error);
         return [];
       }
     },
-    enabled: !!stallAddress,
+    enabled: true,
     refetchInterval: 10000,
   });
 
-  const handleBuy = (objectAddr: string, price: number) => {
-    buyItem({ objectAddr, price });
+  const handleBuy = (objectAddr: string, price: number, stallAddr: string) => {
+    buyItem({ objectAddr, price, stallAddr });
   };
 
-  if (!connected || !stallAddress) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <ShoppingCart className="h-5 w-5" />
-            <span>Marketplace</span>
-          </CardTitle>
-          <CardDescription>
-            Connect wallet and create a stall to view listings
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    );
-  }
+  // No longer block rendering when wallet is not connected
 
   if (isLoading) {
     return (
@@ -89,18 +112,18 @@ export function ListingTable() {
             <span>Marketplace</span>
           </CardTitle>
           <CardDescription>
-            Items listed in your stall will appear here
+            All items available for purchase in the marketplace
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <Package className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No items listed</h3>
+            <h3 className="text-lg font-medium mb-2">No items available</h3>
             <p className="text-muted-foreground mb-4">
-              Your stall is empty. Use the "List Item" section to add items for sale.
+              The marketplace is currently empty. Create a stall and list items to start trading!
             </p>
             <p className="text-xs text-muted-foreground">
-              Note: The previous mock data has been removed. Only real blockchain data is shown now.
+              Note: Only real blockchain data is shown. Items from all stalls will appear here.
             </p>
           </div>
         </CardContent>
@@ -116,7 +139,7 @@ export function ListingTable() {
           <span>Marketplace</span>
         </CardTitle>
         <CardDescription>
-          Items available for purchase in your stall
+          All items available for purchase in the marketplace
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -124,6 +147,7 @@ export function ListingTable() {
           <TableHeader>
             <TableRow>
               <TableHead>Object ID</TableHead>
+              <TableHead>Stall</TableHead>
               <TableHead>Price</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
@@ -134,17 +158,26 @@ export function ListingTable() {
                 <TableCell className="font-mono">
                   {truncateAddress(listing.object_addr)}
                 </TableCell>
+                <TableCell className="font-mono">
+                  {listing.stall_addr ? truncateAddress(listing.stall_addr) : 'Unknown'}
+                </TableCell>
                 <TableCell>
                   {formatApt(listing.price)} APT
                 </TableCell>
                 <TableCell className="text-right">
                   <Button
                     size="sm"
-                    onClick={() => handleBuy(listing.object_addr, listing.price)}
+                    onClick={() => {
+                      if (!connected) {
+                        alert("Please connect your wallet to purchase items");
+                        return;
+                      }
+                      handleBuy(listing.object_addr, listing.price, listing.stall_addr!);
+                    }}
                     disabled={isBuyingItem}
                   >
                     <ShoppingCart className="mr-2 h-4 w-4" />
-                    {isBuyingItem ? "Buying..." : "Buy"}
+                    {isBuyingItem ? "Buying..." : connected ? "Buy" : "Connect Wallet"}
                   </Button>
                 </TableCell>
               </TableRow>

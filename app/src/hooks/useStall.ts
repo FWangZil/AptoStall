@@ -12,6 +12,7 @@ import { useToast } from "./useToast";
 export interface Listing {
   object_addr: string;
   price: number; // in octas
+  stall_addr?: string; // optional for backward compatibility
 }
 
 export function useKiosk() {
@@ -160,13 +161,17 @@ export function useKiosk() {
 
   // Buy item mutation
   const buyItemMutation = useMutation({
-    mutationFn: async ({ objectAddr, price }: { objectAddr: string; price: number }) => {
-      if (!account || !stallAddress) throw new Error("Wallet not connected");
+    mutationFn: async ({ objectAddr, price, stallAddr }: { objectAddr: string; price: number; stallAddr?: string }) => {
+      if (!account) throw new Error("Wallet not connected");
+
+      // Use provided stallAddr or fallback to user's own stall
+      const targetStallAddr = stallAddr || stallAddress;
+      if (!targetStallAddr) throw new Error("No stall address provided");
 
       const payload = {
         function: FUNCTIONS.BUY as `${string}::${string}::${string}`,
         typeArguments: ["0x1::object::ObjectCore"],
-        functionArguments: [stallAddress, objectAddr, price], // price in octas
+        functionArguments: [targetStallAddr, objectAddr, price], // price in octas
       };
 
       const response = await signAndSubmitTransaction({ data: payload });

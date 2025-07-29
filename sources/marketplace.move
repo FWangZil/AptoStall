@@ -24,15 +24,15 @@ module marketplace::marketplace {
 
     /// Represents a listing in the marketplace
     struct Listing has copy, drop, store {
-        price: u64,        // price in APT (octas)
-        policy: u8         // policy type (currently only fixed price)
+        price: u64, // price in APT (octas)
+        policy: u8 // policy type (currently only fixed price)
     }
 
     /// Main stall resource that holds listed items
     struct Stall has key {
-        items: Table<address, Listing>,  // object address -> listing
-        owner: address,                  // seller's EOA wallet
-        signer_cap: SignerCapability     // capability to sign for this stall
+        items: Table<address, Listing>, // object address -> listing
+        owner: address, // seller's EOA wallet
+        signer_cap: SignerCapability // capability to sign for this stall
     }
 
     // Events
@@ -67,20 +67,13 @@ module marketplace::marketplace {
         let stall_addr = signer::address_of(&stall_signer);
 
         // Initialize empty stall
-        let stall = Stall {
-            items: table::new(),
-            owner: owner_addr,
-            signer_cap
-        };
+        let stall = Stall { items: table::new(), owner: owner_addr, signer_cap };
 
         // Move stall to resource account
         move_to(&stall_signer, stall);
 
         // Emit event
-        event::emit(StallCreated {
-            stall_addr,
-            owner: owner_addr
-        });
+        event::emit(StallCreated { stall_addr, owner: owner_addr });
     }
 
     /// Lists an object in the stall at a fixed price
@@ -106,18 +99,11 @@ module marketplace::marketplace {
         object::transfer(owner, object, signer::address_of(&stall_signer));
 
         // Add listing
-        let listing = Listing {
-            price,
-            policy: POLICY_FIXED_PRICE
-        };
+        let listing = Listing { price, policy: POLICY_FIXED_PRICE };
         table::add(&mut stall.items, object_addr, listing);
 
         // Emit event
-        event::emit(ItemListed {
-            stall_addr,
-            object_addr,
-            price
-        });
+        event::emit(ItemListed { stall_addr, object_addr, price });
     }
 
     /// Buys an item from the stall
@@ -144,13 +130,15 @@ module marketplace::marketplace {
         object::transfer(&stall_signer, object, signer::address_of(buyer));
 
         // Emit event
-        event::emit(ItemSold {
-            stall_addr,
-            object_addr,
-            price: listing.price,
-            seller: stall.owner,
-            buyer: signer::address_of(buyer)
-        });
+        event::emit(
+            ItemSold {
+                stall_addr,
+                object_addr,
+                price: listing.price,
+                seller: stall.owner,
+                buyer: signer::address_of(buyer)
+            }
+        );
     }
 
     // View functions
