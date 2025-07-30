@@ -2,7 +2,7 @@
 
 ## 🎯 项目概述
 
-成功创建了一个完整的 **Kiosk 风格固定价格市场** 项目，包含：
+成功创建了一个完整的 **Stall 风格固定价格市场** 项目，包含：
 - **智能合约**：生产级 Move 合约，部署在 Aptos testnet
 - **前端应用**：现代化 React + TypeScript DApp
 
@@ -34,7 +34,7 @@ aptena-contract/
 ## 🔧 智能合约功能
 
 ### 核心特性
-- ✅ **Kiosk 创建**：使用资源账户创建隔离的市场
+- ✅ **Stall 创建**：使用资源账户创建隔离的市场
 - ✅ **物品列表**：固定价格列表系统
 - ✅ **原子化购买**：安全的支付和转移
 - ✅ **事件系统**：完整的事件追踪
@@ -42,7 +42,7 @@ aptena-contract/
 
 ### 数据结构
 ```move
-struct Kiosk has key {
+struct Stall has key {
     items: Table<address, Listing>,
     owner: address,
     signer_cap: SignerCapability
@@ -56,8 +56,8 @@ struct Listing has copy, drop, store {
 
 ### 主要函数
 1. `create_stall(account: &signer, seed: vector<u8>)`
-2. `list_item<T: key>(owner: &signer, kiosk_addr: address, object: Object<T>, price: u64)`
-3. `buy<T: key>(buyer: &signer, kiosk_addr: address, object_addr: address, payment_amount: u64)`
+2. `list_item<T: key>(owner: &signer, stall_addr: address, object: Object<T>, price: u64)`
+3. `buy<T: key>(buyer: &signer, stall_addr: address, object_addr: address, payment_amount: u64)`
 
 ### 测试覆盖
 - ✅ 6个单元测试全部通过
@@ -76,14 +76,14 @@ struct Listing has copy, drop, store {
 
 ### 核心组件
 1. **Header**：钱包连接和用户信息
-2. **KioskSummaryCard**：Kiosk 创建和管理
+2. **StallSummaryCard**：Stall 创建和管理
 3. **ListItemForm**：物品列表表单
 4. **ListingTable**：市场物品展示
 5. **Toast**：通知系统
 
 ### 主要功能
 - ✅ 钱包连接（Petra）
-- ✅ Kiosk 创建和管理
+- ✅ Stall 创建和管理
 - ✅ 物品列表功能
 - ✅ 物品购买功能
 - ✅ 实时余额更新
@@ -124,7 +124,7 @@ VITE_MODULE_ADDRESS=0x42  # 替换为实际部署地址
 ## 🔒 安全特性
 
 ### 智能合约安全
-- **资源账户隔离**：每个 kiosk 独立运行
+- **资源账户隔离**：每个 stall 独立运行
 - **所有权验证**：只有所有者可以列表物品
 - **原子化交易**：支付和转移同时进行
 - **价格验证**：精确的支付金额检查

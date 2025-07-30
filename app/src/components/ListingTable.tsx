@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAptos } from "@/hooks/useAptos";
-import { useKiosk, Listing } from "@/hooks/useStall";
+import { useStall, Listing } from "@/hooks/useStall";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { Account, AccountAddress } from "@aptos-labs/ts-sdk";
 
 export function ListingTable() {
   const { connected } = useWallet();
-  const { stallAddress, buyItem, isBuyingItem } = useKiosk();
+  const { stallAddress, buyItem, isBuyingItem } = useStall();
   const aptos = useAptos();
 
   // Query actual marketplace data from blockchain using events

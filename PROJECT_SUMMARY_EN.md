@@ -2,7 +2,8 @@
 
 ## 🎯 Project Overview
 
-Successfully created a complete **Kiosk-style fixed-price marketplace** project, including:
+Successfully created a complete **Stall-style fixed-price marketplace** project, including:
+
 - **Smart Contract**: Production-grade Move contract deployed on Aptos testnet.
 - **Frontend Application**: Modern React + TypeScript DApp.
 
@@ -34,15 +35,17 @@ aptena-contract/
 ## 🔧 Smart Contract Features
 
 ### Core Features
-- ✅ **Kiosk Creation**: Create isolated marketplaces using resource accounts.
+
+- ✅ **Stall Creation**: Create isolated marketplaces using resource accounts.
 - ✅ **Item Listing**: Fixed-price listing system.
 - ✅ **Atomic Purchase**: Secure payment and transfer.
 - ✅ **Event System**: Complete event tracking.
 - ✅ **View Functions**: State query functions.
 
 ### Data Structures
+
 ```move
-struct Kiosk has key {
+struct Stall has key {
     items: Table<address, Listing>,
     owner: address,
     signer_cap: SignerCapability
@@ -55,11 +58,13 @@ struct Listing has copy, drop, store {
 ```
 
 ### Main Functions
+
 1. `create_stall(account: &signer, seed: vector<u8>)`
-2. `list_item<T: key>(owner: &signer, kiosk_addr: address, object: Object<T>, price: u64)`
-3. `buy<T: key>(buyer: &signer, kiosk_addr: address, object_addr: address, payment_amount: u64)`
+2. `list_item<T: key>(owner: &signer, stall_addr: address, object: Object<T>, price: u64)`
+3. `buy<T: key>(buyer: &signer, stall_addr: address, object_addr: address, payment_amount: u64)`
 
 ### Test Coverage
+
 - ✅ 6 unit tests all passed.
 - ✅ Normal flow tests.
 - ✅ Error case tests.
@@ -68,6 +73,7 @@ struct Listing has copy, drop, store {
 ## 🎨 Frontend Application Features
 
 ### Tech Stack
+
 - **Framework**: React + TypeScript + Vite
 - **UI**: shadcn/ui + Tailwind CSS
 - **Wallet**: @aptos-labs/wallet-adapter-react
@@ -75,15 +81,17 @@ struct Listing has copy, drop, store {
 - **State Management**: @tanstack/react-query
 
 ### Core Components
+
 1. **Header**: Wallet connection and user information.
-2. **KioskSummaryCard**: Kiosk creation and management.
+2. **StallSummaryCard**: Stall creation and management.
 3. **ListItemForm**: Item listing form.
 4. **ListingTable**: Marketplace item display.
 5. **Toast**: Notification system.
 
 ### Main Features
+
 - ✅ Wallet connection (Petra).
-- ✅ Kiosk creation and management.
+- ✅ Stall creation and management.
 - ✅ Item listing functionality.
 - ✅ Item purchasing functionality.
 - ✅ Real-time balance updates.
@@ -92,6 +100,7 @@ struct Listing has copy, drop, store {
 ## 🚀 Deployment and Usage
 
 ### Smart Contract Deployment
+
 ```bash
 # Compile the contract
 aptos move compile --dev
@@ -104,6 +113,7 @@ aptos move publish --profile testnet
 ```
 
 ### Frontend Application Startup
+
 ```bash
 cd app
 
@@ -115,6 +125,7 @@ npm run dev
 ```
 
 ### Environment Configuration
+
 ```env
 VITE_APTOS_NODE_URL=https://fullnode.testnet.aptoslabs.com/v1
 VITE_APTOS_NETWORK=testnet
@@ -124,13 +135,15 @@ VITE_MODULE_ADDRESS=0x42  # Replace with the actual deployment address
 ## 🔒 Security Features
 
 ### Smart Contract Security
-- **Resource Account Isolation**: Each kiosk runs independently.
+
+- **Resource Account Isolation**: Each stall runs independently.
 - **Ownership Verification**: Only the owner can list items.
 - **Atomic Transactions**: Payment and transfer occur simultaneously.
 - **Price Verification**: Precise payment amount checks.
 - **Zero Price Protection**: Prevents listing items with a price of zero.
 
 ### Frontend Security
+
 - **Type Safety**: Full TypeScript coverage.
 - **Input Validation**: Form data validation.
 - **Error Handling**: Comprehensive error handling mechanism.
@@ -139,18 +152,21 @@ VITE_MODULE_ADDRESS=0x42  # Replace with the actual deployment address
 ## 📊 Project Highlights
 
 ### Production-Grade Quality
+
 - **Code Quality**: ESLint + Prettier for code standards.
 - **Test Coverage**: 100% contract function test coverage.
 - **Documentation**: Detailed README and usage guides.
 - **Deployment Ready**: Vercel deployment configuration.
 
 ### User Experience
+
 - **Intuitive Interface**: Clear dual-column layout.
 - **Real-time Feedback**: Toast notification system.
 - **Loading States**: Complete loading and error states.
 - **Responsive Design**: Mobile-friendly adaptation.
 
 ### Developer Experience
+
 - **Modular Design**: Clear separation of components and hooks.
 - **Type Safety**: Full TypeScript support.
 - **Hot Reloading**: Fast development experience with Vite.
@@ -159,12 +175,14 @@ VITE_MODULE_ADDRESS=0x42  # Replace with the actual deployment address
 ## 🔮 Potential Extensions
 
 ### Smart Contract Extensions
+
 - Auction functionality
 - Royalty support
 - Bulk operations
 - Advanced filtering
 
 ### Frontend Extensions
+
 - Multi-wallet support
 - NFT preview
 - Transaction history

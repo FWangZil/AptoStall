@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useKiosk } from "@/hooks/useStall";
+import { useStall } from "@/hooks/useStall";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Package, Plus, Info, AlertTriangle } from "lucide-react";
 
 export function ListItemForm() {
   const { connected } = useWallet();
-  const { stallAddress, listItem, isListingItem } = useKiosk();
+  const { stallAddress, listItem, isListingItem } = useStall();
   const [objectId, setObjectId] = useState("");
   const [price, setPrice] = useState("");
 

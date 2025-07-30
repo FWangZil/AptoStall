@@ -42,22 +42,22 @@ After successful deployment, note the contract address from the output.
 
 ## Interacting with the Contract
 
-### 1. Create a Kiosk
+### 1. Create a Stall
 ```bash
 # Replace <CONTRACT_ADDR> with your deployed contract address
 aptos move run \
   --function-id <CONTRACT_ADDR>::marketplace::create_stall \
-  --args string:"my_kiosk_seed" \
+  --args string:"my_stall_seed" \
   --profile testnet
 ```
 
-### 2. Get Kiosk Address
-The kiosk address can be calculated as:
+### 2. Get Stall Address
+The stall address can be calculated as:
 ```bash
 # Use the Aptos CLI to calculate resource address
 aptos account derive-resource-address \
   --address <YOUR_ACCOUNT_ADDRESS> \
-  --seed "my_kiosk_seed"
+  --seed "my_stall_seed"
 ```
 
 ### 3. List an Item (requires an existing object)
@@ -97,17 +97,17 @@ aptos move view \
   --args address:<KIOSK_ADDR> address:<OBJECT_ADDR>
 ```
 
-### Get kiosk owner
+### Get stall owner
 ```bash
 aptos move view \
-  --function-id <CONTRACT_ADDR>::marketplace::get_kiosk_owner \
+  --function-id <CONTRACT_ADDR>::marketplace::get_stall_owner \
   --args address:<KIOSK_ADDR>
 ```
 
 ## Example Complete Workflow
 
 1. **Deploy contract**
-2. **Create kiosk**
+2. **Create stall**
 3. **Create/mint an NFT or token to list**
 4. **List the item in your stall**
 5. **Another account buys the item**

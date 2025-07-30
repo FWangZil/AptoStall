@@ -1,11 +1,11 @@
 # AptoStall DApp
 
-A minimal but production-grade front-end for the Kiosk-style fixed-price marketplace smart contract on Aptos testnet.
+A minimal but production-grade front-end for the Stall-style fixed-price marketplace smart contract on Aptos testnet.
 
 ## 🚀 Features
 
 - **Wallet Integration**: Connect with Petra wallet
-- **Kiosk Management**: Create and manage your marketplace kiosk
+- **Stall Management**: Create and manage your marketplace stall
 - **Item Listing**: List objects for sale at fixed prices
 - **Purchase Items**: Buy items from the marketplace
 - **Real-time Updates**: Live balance and listing updates
@@ -80,9 +80,9 @@ bun preview
 - Approve connection in Petra wallet
 - Your address and APT balance will be displayed
 
-### 2. Create Kiosk
+### 2. Create Stall
 - Enter a unique seed for your stall
-- Click "Create Kiosk"
+- Click "Create Stall"
 - Approve the transaction in your wallet
 - Your stall address will be saved locally
 
@@ -104,13 +104,13 @@ src/
 ├── components/
 │   ├── ui/                 # shadcn/ui components
 │   ├── Header.tsx          # Navigation with wallet connection
-│   ├── KioskSummaryCard.tsx # Kiosk creation and info
+│   ├── StallSummaryCard.tsx # Stall creation and info
 │   ├── ListItemForm.tsx    # Form to list new items
 │   ├── ListingTable.tsx    # Table of available items
 │   └── Toaster.tsx         # Toast notifications
 ├── hooks/
 │   ├── useAptos.ts         # Aptos SDK client
-│   ├── useKiosk.ts         # Kiosk operations
+│   ├── useStall.ts         # Stall operations
 │   └── useToast.ts         # Toast notifications
 ├── pages/
 │   └── Dashboard.tsx       # Main dashboard page
@@ -170,10 +170,10 @@ bun run format
 
 ### Key Components
 
-- **useKiosk**: Main hook for kiosk operations
+- **useStall**: Main hook for stall operations
 - **useAptos**: Aptos SDK integration
 - **Header**: Wallet connection and user info
-- **Dashboard**: Main layout with kiosk management
+- **Dashboard**: Main layout with stall management
 
 ## 🔍 Troubleshooting
 
@@ -188,8 +188,8 @@ bun run format
    - Check if contract address is correct
    - Ensure object exists and you own it
 
-3. **Kiosk Not Found**
-   - Clear localStorage and create a new kiosk
+3. **Stall Not Found**
+   - Clear localStorage and create a new stall
    - Verify contract is deployed correctly
 
 ### Debug Mode

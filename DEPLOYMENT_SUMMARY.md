@@ -44,7 +44,7 @@ VITE_MODULE_ADDRESS=0xb15f83bd5438cfee66d84f1d25c3c3778a6c6fcd242601b18740b2f365
 - ✅ 列出物品前的警告提示
 
 ### 3. 调试工具
-- ✅ KioskDebugCard 组件
+- ✅ StallDebugCard 组件
 - ✅ 显示当前摊位状态
 - ✅ 清理数据功能
 

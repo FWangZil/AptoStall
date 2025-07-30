@@ -56,15 +56,15 @@ module marketplace::marketplace_test {
     #[test]
     fun test_create_stall() {
         let (seller, _buyer) = setup_test();
-        let seed = b"test_kiosk";
+        let seed = b"test_stall";
 
-        // Create kiosk
+        // Create stall
         marketplace::create_stall(&seller, seed);
 
-        // Verify kiosk was created by checking if we can get owner
-        let kiosk_addr =
+        // Verify stall was created by checking if we can get owner
+        let stall_addr =
             account::create_resource_address(&signer::address_of(&seller), seed);
-        let owner = marketplace::get_stall_owner(kiosk_addr);
+        let owner = marketplace::get_stall_owner(stall_addr);
         assert!(option::is_some(&owner), 1);
         assert!(option::extract(&mut owner) == signer::address_of(&seller), 2);
     }
@@ -72,11 +72,11 @@ module marketplace::marketplace_test {
     #[test]
     fun test_list_and_buy_item() {
         let (seller, buyer) = setup_test();
-        let seed = b"test_kiosk";
+        let seed = b"test_stall";
 
-        // Create kiosk
+        // Create stall
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr =
+        let stall_addr =
             account::create_resource_address(&signer::address_of(&seller), seed);
 
         // Create test object
@@ -85,11 +85,11 @@ module marketplace::marketplace_test {
 
         // List item
         let price = 100000000; // 1 APT in octas
-        marketplace::list_item(&seller, kiosk_addr, test_object, price);
+        marketplace::list_item(&seller, stall_addr, test_object, price);
 
         // Verify item is listed
-        assert!(marketplace::is_listed(kiosk_addr, object_addr), 3);
-        let listed_price = marketplace::get_price(kiosk_addr, object_addr);
+        assert!(marketplace::is_listed(stall_addr, object_addr), 3);
+        let listed_price = marketplace::get_price(stall_addr, object_addr);
         assert!(option::is_some(&listed_price), 4);
         assert!(option::extract(&mut listed_price) == price, 5);
 
@@ -97,10 +97,10 @@ module marketplace::marketplace_test {
         let buyer_balance_before = coin::balance<AptosCoin>(signer::address_of(&buyer));
         let seller_balance_before = coin::balance<AptosCoin>(signer::address_of(&seller));
 
-        marketplace::buy<TestObject>(&buyer, kiosk_addr, object_addr, price);
+        marketplace::buy<TestObject>(&buyer, stall_addr, object_addr, price);
 
         // Verify item is no longer listed
-        assert!(!marketplace::is_listed(kiosk_addr, object_addr), 6);
+        assert!(!marketplace::is_listed(stall_addr, object_addr), 6);
 
         // Verify balances changed correctly
         let buyer_balance_after = coin::balance<AptosCoin>(signer::address_of(&buyer));
@@ -123,68 +123,68 @@ module marketplace::marketplace_test {
     #[expected_failure(abort_code = marketplace::E_ZERO_PRICE)]
     fun test_list_item_zero_price_fails() {
         let (seller, _buyer) = setup_test();
-        let seed = b"test_kiosk";
+        let seed = b"test_stall";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr =
+        let stall_addr =
             account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
 
         // This should fail
-        marketplace::list_item(&seller, kiosk_addr, test_object, 0);
+        marketplace::list_item(&seller, stall_addr, test_object, 0);
     }
 
     #[test]
     #[expected_failure(abort_code = marketplace::E_NOT_OWNER)]
     fun test_list_item_wrong_owner_fails() {
         let (seller, buyer) = setup_test();
-        let seed = b"test_kiosk";
+        let seed = b"test_stall";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr =
+        let stall_addr =
             account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&buyer, 42);
 
-        // Buyer tries to list in seller's kiosk - should fail
-        marketplace::list_item(&buyer, kiosk_addr, test_object, 100000000);
+        // Buyer tries to list in seller's stall - should fail
+        marketplace::list_item(&buyer, stall_addr, test_object, 100000000);
     }
 
     #[test]
     #[expected_failure(abort_code = marketplace::E_NOT_LISTED)]
     fun test_buy_unlisted_item_fails() {
         let (seller, buyer) = setup_test();
-        let seed = b"test_kiosk";
+        let seed = b"test_stall";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr =
+        let stall_addr =
             account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
         let object_addr = object::object_address(&test_object);
 
         // Try to buy unlisted item - should fail
-        marketplace::buy<TestObject>(&buyer, kiosk_addr, object_addr, 100000000);
+        marketplace::buy<TestObject>(&buyer, stall_addr, object_addr, 100000000);
     }
 
     #[test]
     #[expected_failure(abort_code = marketplace::E_PRICE_MISMATCH)]
     fun test_buy_wrong_price_fails() {
         let (seller, buyer) = setup_test();
-        let seed = b"test_kiosk";
+        let seed = b"test_stall";
 
         marketplace::create_stall(&seller, seed);
-        let kiosk_addr =
+        let stall_addr =
             account::create_resource_address(&signer::address_of(&seller), seed);
 
         let test_object = create_test_object(&seller, 42);
         let object_addr = object::object_address(&test_object);
 
         // List at 1 APT
-        marketplace::list_item(&seller, kiosk_addr, test_object, 100000000);
+        marketplace::list_item(&seller, stall_addr, test_object, 100000000);
 
         // Try to pay 0.5 APT - should fail
-        marketplace::buy<TestObject>(&buyer, kiosk_addr, object_addr, 50000000);
+        marketplace::buy<TestObject>(&buyer, stall_addr, object_addr, 50000000);
     }
 }

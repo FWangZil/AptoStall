@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useKiosk } from "@/hooks/useStall";
+import { useStall } from "@/hooks/useStall";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,14 +8,14 @@ import { Label } from "@/components/ui/label";
 import { truncateAddress } from "@/lib/utils";
 import { Store, Plus } from "lucide-react";
 
-export function KioskSummaryCard() {
+export function StallSummaryCard() {
   const { connected } = useWallet();
-  const { stallAddress, kiosk, createKiosk, isCreatingKiosk, clearKioskData } = useKiosk();
+  const { stallAddress, stall, createStall, isCreatingStall, clearStallData } = useStall();
   const [seed, setSeed] = useState("");
 
-  const handleCreateKiosk = () => {
+  const handleCreateStall = () => {
     if (seed.trim()) {
-      createKiosk(seed);
+      createStall(seed);
       setSeed("");
     }
   };
@@ -36,7 +36,7 @@ export function KioskSummaryCard() {
     );
   }
 
-  if (!stallAddress || !kiosk) {
+  if (!stallAddress || !stall) {
     return (
       <Card>
         <CardHeader>
@@ -59,15 +59,15 @@ export function KioskSummaryCard() {
             />
           </div>
           <Button
-            onClick={handleCreateKiosk}
-            disabled={!seed.trim() || isCreatingKiosk}
+            onClick={handleCreateStall}
+            disabled={!seed.trim() || isCreatingStall}
             className="w-full"
           >
             <Plus className="mr-2 h-4 w-4" />
-            {isCreatingKiosk ? "Creating..." : "Create Stall"}
+            {isCreatingStall ? "Creating..." : "Create Stall"}
           </Button>
           <Button
-            onClick={clearKioskData}
+            onClick={clearStallData}
             variant="outline"
             size="sm"
             className="w-full mt-2"
@@ -100,7 +100,7 @@ export function KioskSummaryCard() {
         <div>
           <Label className="text-sm font-medium">Owner</Label>
           <p className="text-sm text-muted-foreground font-mono">
-            {truncateAddress(String(kiosk?.owner || ''))}
+            {truncateAddress(String(stall?.owner || ''))}
           </p>
         </div>
         <div className="pt-2 border-t">

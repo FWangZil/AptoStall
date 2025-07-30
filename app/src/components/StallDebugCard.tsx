@@ -1,4 +1,4 @@
-import { useKiosk } from "@/hooks/useStall";
+import { useStall } from "@/hooks/useStall";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,9 @@ import { truncateAddress } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/utils/constants";
 import { Bug, Trash2, RefreshCw } from "lucide-react";
 
-export function KioskDebugCard() {
+export function StallDebugCard() {
   const { connected, account } = useWallet();
-  const { stallAddress, kiosk, clearKioskData, isKioskLoading } = useKiosk();
+  const { stallAddress, stall, clearStallData, isStallLoading } = useStall();
 
   if (!connected) {
     return null;
@@ -47,8 +47,8 @@ export function KioskDebugCard() {
                 {stallAddress ? truncateAddress(stallAddress) : 'None'}
               </Badge>
               {stallAddress && (
-                <Badge variant={kiosk ? "default" : "destructive"}>
-                  {isKioskLoading ? "Checking..." : kiosk ? "Valid" : "Invalid"}
+                <Badge variant={stall ? "default" : "destructive"}>
+                  {isStallLoading ? "Checking..." : stall ? "Valid" : "Invalid"}
                 </Badge>
               )}
             </div>
@@ -66,12 +66,12 @@ export function KioskDebugCard() {
           <div>
             <label className="text-sm font-medium text-orange-800">Stall Status:</label>
             <div className="flex items-center space-x-2">
-              {isKioskLoading ? (
+              {isStallLoading ? (
                 <Badge variant="secondary">
                   <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
                   Loading...
                 </Badge>
-              ) : kiosk ? (
+              ) : stall ? (
                 <Badge variant="default">
                   ✓ Stall Found
                 </Badge>
@@ -92,7 +92,7 @@ export function KioskDebugCard() {
           <Button
             variant="destructive"
             size="sm"
-            onClick={clearKioskData}
+            onClick={clearStallData}
             className="w-full"
           >
             <Trash2 className="mr-2 h-4 w-4" />

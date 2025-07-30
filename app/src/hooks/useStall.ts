@@ -15,7 +15,7 @@ export interface Listing {
   stall_addr?: string; // optional for backward compatibility
 }
 
-export function useKiosk() {
+export function useStall() {
   const { account, signAndSubmitTransaction } = useWallet();
   const aptos = useAptos();
   const { toast } = useToast();
@@ -24,12 +24,12 @@ export function useKiosk() {
   // Get the stored stall address
   const stallAddress = localStorage.getItem(STORAGE_KEYS.STALL_ADDRESS);
 
-  // Create kiosk mutation
+  // Create stall mutation
   const createStallMutation = useMutation({
     mutationFn: async (seed: string) => {
       if (!account) throw new Error("Wallet not connected");
 
-      console.log("Creating kiosk with seed:", seed);
+      console.log("Creating stall with seed:", seed);
       console.log("Account address:", account.address);
 
       // Check if this seed was already used
@@ -53,27 +53,27 @@ export function useKiosk() {
         await aptos.waitForTransaction({ transactionHash: response.hash });
         console.log("Transaction confirmed");
 
-        // Get the transaction details to extract the kiosk address from events
+        // Get the transaction details to extract the stall address from events
         const txnDetails = await aptos.getTransactionByHash({ transactionHash: response.hash });
         console.log("Transaction details:", txnDetails);
 
-        // Look for KioskCreated event to get the actual kiosk address
+        // Look for StallCreated event to get the actual stall address
         let stallAddress = account.address; // fallback to account address
 
         if ('events' in txnDetails && txnDetails.events) {
-          const kioskCreatedEvent = txnDetails.events.find(
+          const stallCreatedEvent = txnDetails.events.find(
             (event: any) => event.type.includes('StallCreated') || event.type.includes('marketplace::StallCreated')
           );
 
-          if (kioskCreatedEvent && kioskCreatedEvent.data) {
-            stallAddress = kioskCreatedEvent.data.stall_addr;
+          if (stallCreatedEvent && stallCreatedEvent.data) {
+            stallAddress = stallCreatedEvent.data.stall_addr;
             console.log("Found stall address from event:", stallAddress);
           } else {
-            console.log("KioskCreated event not found in events:", txnDetails.events);
+            console.log("StallCreated event not found in events:", txnDetails.events);
             console.log("Trying to derive resource account address");
             try {
               stallAddress = deriveResourceAccountAddress(account.address, seed);
-              console.log("Derived kiosk address:", stallAddress);
+              console.log("Derived stall address:", stallAddress);
             } catch (error) {
               console.warn("Failed to derive resource account address, using account address as fallback:", error);
               stallAddress = account.address;
@@ -93,15 +93,15 @@ export function useKiosk() {
         throw error;
       }
     },
-    onSuccess: (kioskAddr) => {
+    onSuccess: (stallAddr) => {
       toast({
-        title: "Kiosk Created",
-        description: `Kiosk created at ${kioskAddr.slice(0, 10)}...`,
+        title: "Stall Created",
+        description: `Stall created at ${stallAddr.slice(0, 10)}...`,
       });
-      queryClient.invalidateQueries({ queryKey: ["kiosk"] });
+      queryClient.invalidateQueries({ queryKey: ["stall"] });
     },
     onError: (error) => {
-      console.error("Create kiosk error:", error);
+      console.error("Create stall error:", error);
       let errorMessage = error.message;
 
       if (errorMessage.includes("claimed account")) {
@@ -119,7 +119,7 @@ export function useKiosk() {
   // List item mutation
   const listItemMutation = useMutation({
     mutationFn: async ({ objectId, price }: { objectId: string; price: number }) => {
-      if (!account || !stallAddress) throw new Error("Wallet not connected or no kiosk");
+      if (!account || !stallAddress) throw new Error("Wallet not connected or no stall");
 
       const payload = {
         function: FUNCTIONS.LIST_ITEM as `${string}::${string}::${string}`,
@@ -209,9 +209,9 @@ export function useKiosk() {
     },
   });
 
-  // Check if kiosk exists
-  const kioskQuery = useQuery({
-    queryKey: ["kiosk", stallAddress],
+  // Check if stall exists
+  const stallQuery = useQuery({
+    queryKey: ["stall", stallAddress],
     queryFn: async () => {
       if (!stallAddress) return null;
 
@@ -231,22 +231,22 @@ export function useKiosk() {
   });
 
   // Function to clear stall data (for debugging)
-  const clearKioskData = () => {
+  const clearStallData = () => {
     localStorage.removeItem(STORAGE_KEYS.STALL_ADDRESS);
     localStorage.removeItem(`${STORAGE_KEYS.STALL_ADDRESS}_seed`);
-    queryClient.invalidateQueries({ queryKey: ["kiosk"] });
+    queryClient.invalidateQueries({ queryKey: ["stall"] });
   };
 
   return {
     stallAddress,
-    kiosk: kioskQuery.data,
-    isKioskLoading: kioskQuery.isLoading,
-    createKiosk: createStallMutation.mutate,
-    isCreatingKiosk: createStallMutation.isPending,
+    stall: stallQuery.data,
+    isStallLoading: stallQuery.isLoading,
+    createStall: createStallMutation.mutate,
+    isCreatingStall: createStallMutation.isPending,
     listItem: listItemMutation.mutate,
     isListingItem: listItemMutation.isPending,
     buyItem: buyItemMutation.mutate,
     isBuyingItem: buyItemMutation.isPending,
-    clearKioskData, // For debugging purposes
+    clearStallData, // For debugging purposes
   };
 }

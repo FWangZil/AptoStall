@@ -1,11 +1,11 @@
 # AptoStall Smart Contract
 
-A production-grade, minimal smart contract package implementing a **Kiosk-style fixed-price marketplace** on the Aptos blockchain.
+A production-grade, minimal smart contract package implementing a **Stall-style fixed-price marketplace** on the Aptos blockchain.
 
 ## 🎯 Overview
 
 This marketplace allows:
-- **Sellers** to create isolated resource accounts that hold "Kiosk" resources
+- **Sellers** to create isolated resource accounts that hold "Stall" resources
 - **Sellers** to list any transferable object (NFT or fungible token) at a fixed price
 - **Buyers** to atomically purchase items, with automatic payment transfer and event emission
 - Simple fixed-price offers (no auctions or dynamic pricing)
@@ -14,12 +14,12 @@ This marketplace allows:
 
 ### Core Data Structures
 
-#### Kiosk
+#### Stall
 ```move
-struct Kiosk has key {
+struct Stall has key {
     items: table::Table<address, Listing>,  // object address -> listing
     owner: address,                         // seller's EOA wallet
-    signer_cap: SignerCapability           // capability to sign for this kiosk
+    signer_cap: SignerCapability           // capability to sign for this stall
 }
 ```
 
@@ -35,24 +35,24 @@ struct Listing has copy, drop, store {
 
 1. **`create_stall(account: &signer, seed: vector<u8>)`**
    - Creates a resource account using the provided seed
-   - Publishes an empty Kiosk under that account
-   - Emits `KioskCreated` event
+   - Publishes an empty Stall under that account
+   - Emits `StallCreated` event
 
-2. **`list_item<T: key>(owner: &signer, kiosk_addr: address, object: Object<T>, price: u64)`**
-   - Lists an object in the kiosk at a fixed price
-   - Transfers object to kiosk storage
+2. **`list_item<T: key>(owner: &signer, stall_addr: address, object: Object<T>, price: u64)`**
+   - Lists an object in the stall at a fixed price
+   - Transfers object to stall storage
    - Emits `ItemListed` event
 
-3. **`buy<T: key>(buyer: &signer, kiosk_addr: address, object_addr: address, payment_amount: u64)`**
-   - Purchases an item from the kiosk
+3. **`buy<T: key>(buyer: &signer, stall_addr: address, object_addr: address, payment_amount: u64)`**
+   - Purchases an item from the stall
    - Transfers payment to seller and object to buyer
    - Emits `ItemSold` event
 
 ### View Functions
 
-- `is_listed(kiosk_addr: address, object_addr: address): bool`
-- `get_price(kiosk_addr: address, object_addr: address): Option<u64>`
-- `get_kiosk_owner(kiosk_addr: address): Option<address>`
+- `is_listed(stall_addr: address, object_addr: address): bool`
+- `get_price(stall_addr: address, object_addr: address): Option<u64>`
+- `get_stall_owner(stall_addr: address): Option<address>`
 
 ## 🚀 Quick Start
 
@@ -89,11 +89,11 @@ aptos move publish --profile testnet
 
 ## 📋 Usage Examples
 
-### 1. Create a Kiosk
+### 1. Create a Stall
 ```bash
 aptos move run \
   --function-id <CONTRACT_ADDR>::marketplace::create_stall \
-  --args string:"my_kiosk_seed" \
+  --args string:"my_stall_seed" \
   --profile testnet
 ```
 
@@ -117,8 +117,8 @@ aptos move run \
 
 ## 🔒 Security Features
 
-- **Resource Account Isolation**: Each kiosk operates in its own resource account
-- **Ownership Verification**: Only kiosk owners can list items
+- **Resource Account Isolation**: Each stall operates in its own resource account
+- **Ownership Verification**: Only stall owners can list items
 - **Atomic Transactions**: Payment and object transfer happen atomically
 - **Price Validation**: Exact payment amount required
 - **Zero Price Protection**: Prevents listing items at zero price
@@ -127,7 +127,7 @@ aptos move run \
 
 The contract includes comprehensive unit tests covering:
 
-- ✅ Kiosk creation
+- ✅ Stall creation
 - ✅ Item listing and purchasing
 - ✅ Error conditions (wrong owner, unlisted items, price mismatches)
 - ✅ Balance verification
@@ -160,15 +160,15 @@ Test result: OK. Total tests: 6; passed: 6; failed: 0
 
 ## 🎯 Error Codes
 
-- `E_NOT_OWNER (1)`: Caller is not the kiosk owner
+- `E_NOT_OWNER (1)`: Caller is not the stall owner
 - `E_NOT_LISTED (2)`: Object not found in marketplace
 - `E_PRICE_MISMATCH (3)`: Payment amount doesn't match listing price
 - `E_ZERO_PRICE (4)`: Cannot list item at zero price
-- `E_KIOSK_NOT_FOUND (5)`: Kiosk resource not found
+- `E_KIOSK_NOT_FOUND (5)`: Stall resource not found
 
 ## 📊 Events
 
-- `KioskCreated`: Emitted when a new kiosk is created
+- `StallCreated`: Emitted when a new stall is created
 - `ItemListed`: Emitted when an item is listed for sale
 - `ItemSold`: Emitted when an item is successfully purchased
 
