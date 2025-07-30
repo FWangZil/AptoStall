@@ -4,6 +4,7 @@ import { formatApt, truncateAddress } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useAptos } from "@/hooks/useAptos";
 import { Wallet, LogOut } from "lucide-react";
+import aptostallLogo from "@/images/aptostall_logo.png";
 
 export function Header() {
   const { account, connected, disconnect, connect, wallets, isLoading } = useWallet();
@@ -31,9 +32,11 @@ export function Header() {
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-sm font-bold text-primary-foreground">K</span>
-          </div>
+          <img 
+            src={aptostallLogo} 
+            alt="AptoStall Logo" 
+            className="h-8 w-8 object-contain"
+          />
           <h1 className="text-xl font-bold">AptoStall</h1>
         </div>
 
